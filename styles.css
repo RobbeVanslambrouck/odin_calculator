@@ -84,26 +84,6 @@ button {
     transition: 0.3s;
 }
 
-#solve:hover {
-    background-color: #F4AA4E;
-    transition: 0.3s;
-}
-
-#solve:active {
-    background-color: #BF6B04;
-    transition: 0.3s;
-}
-
-button:hover {
-    background-color: #038C8C;
-    transition: 0.3s;
-}
-
-button:active {
-    background-color: #025159;
-    transition: 0.3s;
-}
-
 footer {
     text-align: center;
     font-size: 1.4rem;
@@ -122,8 +102,31 @@ footer a {
     line-height: var(--footerHeight);
 }
 
-footer a:hover {
-    color: #F28705;
+@media (hover: hover) and (pointer: fine) {
+    
+    button:hover {
+        background-color: #038C8C;
+        transition: 0.3s;
+    }
+
+    #solve:hover {
+        background-color: #F4AA4E;
+        transition: 0.3s;
+    }
+
+    footer a:hover {
+        color: #F28705;
+    }
+}
+
+button:active {
+    background-color: #025159;
+    transition: 0.3s;
+}
+
+#solve:active {
+    background-color: #BF6B04;
+    transition: 0.3s;
 }
 
 @media screen and (min-width: 480px) {
