@@ -108,3 +108,27 @@ footer a {
 footer a:hover {
     color: #F28705;
 }
+
+@media screen and (min-width: 480px) {
+    
+    body {
+        align-items: center;
+    }
+
+    header {
+        border: none;
+    }
+
+    .calculator {
+        width: 45rem;
+        height: calc(100vh - var(--headerHeight) - var(--footerHeight) - 1rem - 2px);
+        border: #F2F2F2 solid 0.4rem;
+        border-radius: 0.5rem;
+        border-style: outset;
+    }
+
+    footer {
+        border: none;
+    }
+
+}
