@@ -1,0 +1,110 @@
+:root {
+    --headerHeight: 5rem;
+    --footerHeight: 4rem;
+}
+
+* {
+    margin: 0;
+    padding: 0;
+}
+
+html {
+    font-size: 62.5%;
+}
+
+body {
+    margin: 0;
+    padding: 0;
+    display: flex;
+    flex-direction: column;
+    justify-content: space-between;
+    align-items: stretch;
+    height: 100vh;
+    font-size: 2rem;
+    background-color: #012E40;
+    color: #F2F2F2;
+    font-family: 'Roboto', sans-serif;
+}
+
+header {
+    border-bottom: #F2F2F2 1px solid;
+    text-align: center;
+    height: var(--headerHeight);
+}
+
+h1 {
+    font-size: 3rem;
+    line-height: var(--headerHeight);
+}
+
+.calculator {
+    display: grid;
+    grid-template-columns: repeat(4, 1fr);
+    grid-template-rows: repeat(7, 1fr);
+    grid-template-areas: 
+        "screen screen screen screen"
+        "screen screen screen screen"
+        "clear delete percent divide"
+        "seven eight nine multiply"
+        "four five six subtract"
+        "one two three add"
+        "doubleZero zero dot solve";
+    background-color: #012E40;
+    height: calc(100vh - var(--headerHeight) - var(--footerHeight) - 2px);
+}
+
+#screen {
+    grid-area: screen;
+    background-color: #025159;
+    color: #F2F2F2;
+    padding: 1rem;
+    display: grid;
+    grid-template-columns: 1fr;
+    grid-template-rows: 3rem 1fr;
+    align-items: center;
+    justify-items: end;
+    font-weight: 700;
+}
+
+#currentLine {
+    font-size: 4.5rem;
+}
+
+button {
+    font-weight: 700;
+    background-color: #012E40;
+    color: #F2F2F2;
+    border: none;
+    font-size: 2rem;
+    transition: 0.3s;
+}
+
+#solve {
+    background-color: #F28705;
+}
+
+button:hover {
+    background-color: #038C8C;
+}
+
+footer {
+    text-align: center;
+    font-size: 1.4rem;
+    border-top: #F2F2F2 1px solid;
+    height: var(--footerHeight);
+}
+
+footer p{
+ display: inline-block;
+ line-height: var(--footerHeight);
+}
+
+footer a {
+    color: #F2F2F2;
+    text-decoration: none;
+    line-height: var(--footerHeight);
+}
+
+footer a:hover {
+    color: #F28705;
+}

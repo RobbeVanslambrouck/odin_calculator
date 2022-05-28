@@ -7,6 +7,10 @@
     <title>Calculator | by Robbe Vanslambrouck</title>
     <link rel="shortcut icon" href="icons/calculator-solid.svg" type="image/x-icon">
     <link rel="stylesheet" href="./assets/fontawesome/css/all.css">
+    <link rel="stylesheet" href="styles.css">
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link href="https://fonts.googleapis.com/css2?family=Roboto:ital,wght@0,100;0,300;0,400;0,500;0,700;0,900;1,100;1,300;1,400;1,500;1,700;1,900&display=swap" rel="stylesheet">
 </head>
 <body>
     <header>
@@ -14,27 +18,30 @@
     </header>
     <main>
         <div class="calculator">
-            <div id="screen"></div>
-            <button id="allClear">AC</button>
-            <button id="delete">delete</button>
-            <button id="percent">%</button>
-            <button id="divide">/</button>
+            <div id="screen">
+                <p id="historyLine">10 + </p>
+                <p id="currentLine">42</p>
+            </div>
+            <button id="allClear" >AC</button>
+            <button id="delete"><i class="fas fa-backspace"></i></button>
+            <button id="percent"><i class="fa-solid fa-percent"></i></button>
+            <button id="divide"><i class="fa-solid fa-divide"></i></button>
             <button id="seven">7</button>
             <button id="eight">8</button>
             <button id="nine">9</button>
-            <button id="multiply">*</button>
+            <button id="multiply"><i class="fa-solid fa-xmark"></i></button>
             <button id="four">4</button>
             <button id="five">5</button>
             <button id="six">6</button>
-            <button id="subtract">-</button>
+            <button id="subtract"><i class="fa-solid fa-minus"></i></button>
             <button id="one">1</button>
             <button id="two">2</button>
             <button id="three">3</button>
-            <button id="add">+</button>
-            <button id="doubleZero">00</button>
+            <button id="add"><i class="fa-solid fa-plus"></i></button>
+            <button id="plusMinus"><i class="fa-solid fa-plus-minus"></i></button>
             <button id="zero">0</button>
             <button id="dot">.</button>
-            <button id="solve">=</button>
+            <button id="solve"><i class="fa-solid fa-equals"></i></button>
         </div>
     </main>
     <footer>
