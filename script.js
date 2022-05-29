@@ -3,18 +3,7 @@ const buttons = {
     backspace: document.querySelector("#backspace"),
     solve: document.querySelector("#solve"),
     dot: document.querySelector("#dot"),
-    numbers: {
-        zero: document.querySelector("#zero"),
-        one: document.querySelector("#one"),
-        two: document.querySelector("#two"),
-        three: document.querySelector("#three"),
-        four: document.querySelector("#four"),
-        five: document.querySelector("#five"),
-        six: document.querySelector("#six"),
-        seven: document.querySelector("#seven"),
-        eight: document.querySelector("#eight"),
-        nine: document.querySelector("#nine"),
-    },
+    numbers: document.querySelectorAll(".number"),
     operators: {
         add: document.querySelector("#add"),
         sub: document.querySelector("#subtract"),
@@ -36,42 +25,72 @@ const numbers = {
 
 let operator = "";
 
+document.addEventListener("keydown", e => {
+    switch (true) {
+        case (e.key >= 0 && e.key <= 9):
+            addNumberToMainDisplay(e.key);
+            break;
+        case e.key === "Backspace":
+            backspace();
+            break;
+        case e.key === ".":
+            addDot();
+            break;
+        case e.key === "Escape":
+            allClear();
+            break;
+        default:
+            break;
+    }
+});
 
 buttons.allClear.addEventListener("click", e => {
+    allClear();
+});
+
+buttons.backspace.addEventListener("click", backspace);
+
+buttons.dot.addEventListener("click", addDot);
+
+Object.values(buttons.numbers).forEach(btn => {
+    btn.addEventListener("click", e => {
+        addNumberToMainDisplay(e.target.textContent)
+    });
+});
+
+function allClear() {
     clearDisplay();
     numbers.a = NaN;
     numbers.b = NaN;
     operator = "";
-});
+}
 
-buttons.backspace.addEventListener("click", e => {
+function addDot() {
+    text = display.main.textContent;
+    if (!text.includes(".")) {
+        text += ".";
+        display.main.textContent = text;
+    }
+}
+
+function backspace() {
     let text = display.main.textContent;
     text = text.slice(0, -1);
     if (text === "") {
         text = "0";
     }
     display.main.textContent = text;
-});
+}
 
-buttons.dot.addEventListener("click", e => {
-    text = display.main.textContent;
-    if (!text.includes(".")) {
-        text += ".";
-        display.main.textContent = text;
+function addNumberToMainDisplay(number = "") {
+    let text = display.main.textContent;
+    text += number;
+    text = text.replace(/^0+(?!\.)/, "");
+    if (text === "") {
+        text = "0";
     }
-});
-
-Object.values(buttons.numbers).forEach(btn => {
-    btn.addEventListener("click", e => {
-        let text = display.main.textContent;
-        text += e.target.textContent;
-        text = text.replace(/^0+(?!\.)/, "");
-        if (text === "") {
-            text = "0";
-        }
-        display.main.textContent = text;
-    });
-});
+    display.main.textContent = text;
+}
 
 function clearDisplay() {
     display.main.textContent = 0;
