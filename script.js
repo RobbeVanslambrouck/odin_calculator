@@ -8,12 +8,6 @@ class ScreenLine {
     constructor(domElement, textContent="") {
         this.#domElement = domElement;
         this.#text = textContent;
-        this.removeLastChar = function () {
-            this.#text = this.#text.slice(0, -1);
-        };
-        this.clear = function () {
-            this.#text = "";
-        };
     }
     update() {
         this.#domElement.textContent = this.#text;
@@ -22,9 +16,9 @@ class ScreenLine {
         this.#text += char;
     }
     removeLastChar() {
-        this.#text = this.text.slice(0, -1);
+        this.#text = this.#text.slice(0, -1);
     }
-    setText(string) {
+    set text(string) {
         this.#text = string;
     }
 
@@ -39,22 +33,81 @@ class Screen {
         this.lines = lines;
     }
     update() {
-        Object.values(this.lines).forEach(screenLine => {
-            screenLine.update();
+        Object.values(this.lines).forEach(line => {
+            line.update();
+        });
+    }
+
+    clear() {
+        Object.values(this.lines).forEach(line => {
+            line.text = "";
         });
     }
 }
 
+class Operation {
+    a;
+    b;
+    operator;
+    solution = 0;
+    constructor(a = NaN, b = NaN, operator = "") {
+        this.a = a;
+        this.b = b;
+        this.operator = operator;
+    }
+
+
+
+    set operator(operator) {
+        this.operator = operator;
+    }
+
+    isSolvable() {
+        return  !isNaN(this.a) && !isNaN(this.b) && this.operator != "";
+    }
+
+    solved() {
+        if(this.isSolvable()) {
+            this.solution = operate(this.operator, this.a, this.b);
+            return true;
+        }
+        return false;
+    }
+
+    addNumber(number) {
+        if (isNaN(this.a)) {
+            this.a = number;
+            return;
+        }
+        this.b = number;
+    }
+
+    toString() {
+        if (isNaN(this.a)) {
+            return "Error"
+        }
+        if (isNaN(this.b)) {
+            return this.a + " " + this.operator;
+        }
+
+        return this.a + " " + this.operator + " " + this.b + " =";
+    }
+
+}
+
 const screenLines = {
-    currentLine: new ScreenLine(document.querySelector("#currentLine")), 
-    historyLine: new ScreenLine(document.querySelector("#historyLine"))
+    current: new ScreenLine(document.querySelector("#currentLine")), 
+    history: new ScreenLine(document.querySelector("#historyLine"))
 };
 
 const screen = new Screen(screenLines);
 
+let operation = new Operation();
+
 const input = {
     allClear: document.querySelector("#allClear"),
     backspace: document.querySelector("#backspace"),
+    solve: document.querySelector("#solve"),
     numbers: {
         zero: document.querySelector("#zero"),
         one: document.querySelector("#one"),
@@ -68,34 +121,74 @@ const input = {
         nine: document.querySelector("#nine"),
     },
     operators: {
-        add: document.querySelector("#add"),
-        subtract: document.querySelector("#subtract"),
-        multiply: document.querySelector("#multiply"),
-        divide: document.querySelector("#divide"),
-        percent: document.querySelector("#percent"),
+        "+": document.querySelector("#add"),
+        "-": document.querySelector("#subtract"),
+        "*": document.querySelector("#multiply"),
+        "/": document.querySelector("#divide"),
+        "%": document.querySelector("#percent"),
     }
 }
 
 input.allClear.addEventListener("click", e => {
-    screen.lines.currentLine.clear();
+    screen.clear();
     screen.update();
 });
 
 input.backspace.addEventListener("click", e => {
-    screen.lines.currentLine.removeLastChar();
+    screen.lines.current.removeLastChar();
     screen.update();
 });
  
 Object.values(input.numbers).forEach(number => {
     number.addEventListener("click", e => {
-        screen.lines.currentLine.addChar(e.target.textContent);
+        screen.lines.current.addChar(e.target.textContent);
         screen.update();
     });
 });
 
-input.operators.add.addEventListener("click", e => {
-    console.log(screen.lines.currentLine)
+for (const [op, domElement] of Object.entries(input.operators)) {
+    domElement.addEventListener("click", e => {
+        executeOperation(op);
+    });
+}
+
+input.solve.addEventListener("click", e => {
+    let currNum = parseInt(screen.lines.current.text);
+    if (isNaN(currNum)) {
+        return;
+    }
+    operation.addNumber(currNum);
+    if (operation.solved()) {
+        let answer = operation.solution
+        screen.lines.history.text = operation.toString();
+        screen.lines.current.text = answer;
+        screen.update();
+        operation = new Operation();
+    }
 });
+
+
+
+function executeOperation(op) {
+    operation.operator = op;
+    let currNum = parseInt(screen.lines.current.text);
+    if (isNaN(currNum)) {
+        screen.lines.history.text = operation.toString();
+        screen.lines.history.update();
+        return;
+    }
+    operation.addNumber(currNum);
+    if (operation.solved()) {
+        let answer = operation.solution;
+        operation = new Operation();
+        operation.a = answer;
+        operation.operator = op;
+        screen.lines.current.text = answer;
+    }
+    screen.lines.history.text = operation.toString();
+    screen.update();
+    screen.lines.current.text = "";
+}
 
 function init() {
     screen.update();
