@@ -27,15 +27,19 @@ class ScreenLine {
     setText(string) {
         this.#text = string;
     }
+
+    get text() {
+        return this.#text;
+    }
 }
 
 class Screen {
-    screenLines = [];
-    constructor(screenLines) {
-        this.screenLines = screenLines;
+    lines = [];
+    constructor(lines) {
+        this.lines = lines;
     }
     update() {
-        Object.values(this.screenLines).forEach(screenLine => {
+        Object.values(this.lines).forEach(screenLine => {
             screenLine.update();
         });
     }
@@ -73,24 +77,24 @@ const input = {
 }
 
 input.allClear.addEventListener("click", e => {
-    screen.screenLines.currentLine.clear();
+    screen.lines.currentLine.clear();
     screen.update();
 });
 
 input.backspace.addEventListener("click", e => {
-    screen.screenLines.currentLine.removeLastChar();
+    screen.lines.currentLine.removeLastChar();
     screen.update();
 });
  
 Object.values(input.numbers).forEach(number => {
     number.addEventListener("click", e => {
-        screen.screenLines.currentLine.addChar(e.target.textContent);
+        screen.lines.currentLine.addChar(e.target.textContent);
         screen.update();
     });
 });
 
 input.operators.add.addEventListener("click", e => {
-
+    console.log(screen.lines.currentLine)
 });
 
 function init() {
