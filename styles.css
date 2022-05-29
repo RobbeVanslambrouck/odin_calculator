@@ -53,7 +53,7 @@ h1 {
     height: calc(100vh - var(--headerHeight) - var(--footerHeight) - 2px);
 }
 
-#screen {
+#display {
     grid-area: screen;
     background-color: #025159;
     color: #F2F2F2;
@@ -66,7 +66,7 @@ h1 {
     font-weight: 700;
 }
 
-#currentLine {
+#mainLine {
     font-size: 4.5rem;
 }
 
