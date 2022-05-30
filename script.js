@@ -5,22 +5,24 @@ const buttons = {
     dot: document.querySelector("#dot"),
     numbers: document.querySelectorAll(".number"),
     operators: {
-        add: document.querySelector("#add"),
-        sub: document.querySelector("#subtract"),
-        mul: document.querySelector("#multiply"),
-        div: document.querySelector("#divide"),
-        percent: document.querySelector("#percent"),
+        "+": document.querySelector("#add"),
+        "-": document.querySelector("#subtract"),
+        "*": document.querySelector("#multiply"),
+        "/": document.querySelector("#divide"),
+        "%": document.querySelector("#percent"),
     }
 }
 
 const display = {
     stat: document.querySelector("#statusLine"),
-    main: document.querySelector("#mainLine")
+    main: document.querySelector("#mainLine"),
+    lock: false
 }
 
 const numbers = {
     a: NaN,
-    b: NaN
+    b: NaN,
+    ans: NaN
 }
 
 let operator = "";
@@ -38,6 +40,13 @@ document.addEventListener("keydown", e => {
             break;
         case e.key === "Escape":
             allClear();
+            break;
+        case e.key === "+":
+        case e.key === "-":
+        case e.key === "*":
+        case e.key === "/":
+        case e.key === "%":
+            operatorClick(e.key);
             break;
         default:
             break;
@@ -58,11 +67,38 @@ Object.values(buttons.numbers).forEach(btn => {
     });
 });
 
+for (const [op, btn] of Object.entries(buttons.operators)) {
+    btn.addEventListener("click", e => {
+        operatorClick(op);
+    });
+}
+
 function allClear() {
     clearDisplay();
     numbers.a = NaN;
     numbers.b = NaN;
     operator = "";
+}
+
+function operatorClick(e) {
+    console.log(display.lock);
+    if (isNaN(numbers.a)) {
+        operator = e;
+        numbers.a = parseFloat(display.main.textContent);
+        display.lock = true;
+        display.stat.textContent = numbers.a + " " + operator;
+        return;
+    }
+    if (!display.lock) {
+        numbers.b = parseFloat(display.main.textContent);
+        numbers.ans = operate(operator, numbers.a, numbers.b);
+        numbers.a = numbers.ans;
+        numbers.b = NaN;
+        display.main.textContent = numbers.ans;
+        display.lock = true;
+    }
+    operator = e;
+    display.stat.textContent = numbers.a + " " + operator;
 }
 
 function addDot() {
@@ -76,17 +112,24 @@ function addDot() {
 function backspace() {
     let text = display.main.textContent;
     text = text.slice(0, -1);
+    display.lock = false;
     if (text === "") {
+        display.lock = true;
         text = "0";
     }
     display.main.textContent = text;
 }
 
 function addNumberToMainDisplay(number = "") {
+    if (display.lock) {
+        display.lock = false;
+        display.main.textContent = "0";
+    }
     let text = display.main.textContent;
     text += number;
     text = text.replace(/^0+(?!\.)/, "");
     if (text === "") {
+        display.lock = true;
         text = "0";
     }
     display.main.textContent = text;
@@ -95,6 +138,7 @@ function addNumberToMainDisplay(number = "") {
 function clearDisplay() {
     display.main.textContent = 0;
     display.stat.textContent = "";
+    display.lock = false;
 }
 
 function add(a, b=0) {
