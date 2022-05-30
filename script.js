@@ -111,6 +111,7 @@ function allClear() {
     clearDisplay();
     numbers.a = NaN;
     numbers.b = NaN;
+    numbers.ans = NaN;
     operator = "";
 }
 
