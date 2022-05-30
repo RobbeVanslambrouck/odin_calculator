@@ -68,6 +68,19 @@ h1 {
 
 #mainLine {
     font-size: 4.5rem;
+    width: 100%;
+    text-align: end;
+    white-space: nowrap;
+    overflow: hidden;
+    text-overflow: ellipsis;
+}
+
+#statusLine {
+    width: 100%;
+    text-align: end;
+    white-space: nowrap;
+    overflow: hidden;
+    text-overflow: ellipsis;
 }
 
 button {
