@@ -8,7 +8,7 @@ const buttons = {
     operators: {
         "+": document.querySelector("#add"),
         "-": document.querySelector("#subtract"),
-        "*": document.querySelector("#multiply"),
+        "x": document.querySelector("#multiply"),
         "/": document.querySelector("#divide"),
         "%": document.querySelector("#percent"),
     }
@@ -27,6 +27,20 @@ const numbers = {
 }
 
 let operator = "";
+
+const divByZeroMsg = "UNDEFINED!\n" 
++ "The reason that the result of a division by zero is undefined is the fact that any attempt at a definition leads to a contradiction.\n"
++ "To begin with, how do we define division? The ratio r of two numbers a and b:\n"
++ "r=a/b\n" 
++ "is that number r that satisfies\n" 
++ "a=r*b. Well, if b=0, i.e., we are trying to divide by zero, we have to find a number r such that\n" 
++ "r*0=a.(1)\n" 
++ "But\n" 
++ "r*0=0\n" 
++ "for all numbers r, and so unless a=0 there is no solution of equation (1).\n" 
++ "Now you could say that r=infinity satisfies (1). That's a common way of putting things, but what's infinity? It is not a number! Why not? Because if we treated it like a number we'd run into contradictions. Ask for example what we obtain when adding a number to infinity. The common perception is that infinity plus any number is still infinity. If that's so, then\n" 
++ "infinity = infinity+1 = infinity + 2\n" 
++ "which would imply that 1 equals 2 if infinity was a number. That in turn would imply that all integers are equal, for example, and our whole number system would collapse.";
 
 document.addEventListener("keydown", e => {
     switch (true) {
@@ -96,15 +110,15 @@ function solve() {
     if (isNaN(numbers.a)) {
         return;
     }
-    if (!display.lock) {
-        numbers.b = parseFloat(display.main.textContent);
-        numbers.ans = operate(operator, numbers.a, numbers.b);
-        display.stat.textContent = numbers.a + " " + operator + " " + numbers.b + " =";
-        display.main.textContent = numbers.ans;
-        numbers.a = numbers.ans;
-        numbers.b = NaN;
-        display.lock = true;
+    if (display.lock) {
+        return;
     }
+    numbers.b = parseFloat(display.main.textContent);
+    if (isDivByZero()) {
+        return;
+    }
+    display.stat.textContent = numbers.a + " " + operator + " " + numbers.b + " =";
+    setAnswer(operate(operator, numbers.a, numbers.b));
 }
 
 function allClear() {
@@ -116,23 +130,43 @@ function allClear() {
 }
 
 function operatorClick(e) {
-    if (isNaN(numbers.a)) {
+    let updateStat = () =>  {
         operator = e;
+        display.stat.textContent = numbers.a + " " + operator;
+    }
+    if (isNaN(numbers.a)) {
         numbers.a = parseFloat(display.main.textContent);
         display.lock = true;
-        display.stat.textContent = numbers.a + " " + operator;
+        updateStat();
         return;
     }
-    if (!display.lock) {
-        numbers.b = parseFloat(display.main.textContent);
-        numbers.ans = operate(operator, numbers.a, numbers.b);
-        numbers.a = numbers.ans;
-        numbers.b = NaN;
-        display.main.textContent = numbers.ans;
-        display.lock = true;
+    if (display.lock) {
+        updateStat();
+        return;
     }
-    operator = e;
-    display.stat.textContent = numbers.a + " " + operator;
+    numbers.b = parseFloat(display.main.textContent);
+    if (isDivByZero())
+        return;
+
+    setAnswer(operate(operator, numbers.a, numbers.b));
+    updateStat();
+}
+
+function setAnswer(answer) {
+    numbers.ans = answer;
+    numbers.a = numbers.ans;
+    numbers.b = NaN;
+    display.main.textContent = numbers.ans;
+    display.lock = true;
+}
+
+function isDivByZero() {
+    if (numbers.b === 0 && operator === "/") {
+        alert(divByZeroMsg);
+        numbers.b = NaN;
+        return true;
+    }
+    return false;
 }
 
 function addDot() {
@@ -164,7 +198,6 @@ function addNumberToMainDisplay(number = "") {
     text += number;
     text = text.replace(/^0+(?!\.)/, "");
     if (text === "") {
-        display.lock = true;
         text = "0";
     }
     display.main.textContent = text;
@@ -193,6 +226,9 @@ function multiply(a, b=1) {
 }
 
 function divide(a, b=1) {
+    if (b === 0 ) {
+        return a;
+    }
     return a / b;
 }
 
@@ -206,7 +242,7 @@ function operate(operator, a, b) {
             return add(a, b);
         case "-":
             return subtract(a, b);
-        case "*":
+        case "x":
             return multiply(a, b);
         case "/":
             return divide(a, b);
