@@ -3,6 +3,7 @@ const buttons = {
     backspace: document.querySelector("#backspace"),
     solve: document.querySelector("#solve"),
     dot: document.querySelector("#dot"),
+    plusMinus: document.querySelector("#plusMinus"),
     numbers: document.querySelectorAll(".number"),
     operators: {
         "+": document.querySelector("#add"),
@@ -41,6 +42,11 @@ document.addEventListener("keydown", e => {
         case e.key === "Escape":
             allClear();
             break;
+        case e.key === "=":
+        case e.key === "Enter":
+            e.preventDefault();
+            solve();
+            break;
         case e.key === "+":
         case e.key === "-":
         case e.key === "*":
@@ -61,6 +67,10 @@ buttons.backspace.addEventListener("click", backspace);
 
 buttons.dot.addEventListener("click", addDot);
 
+buttons.solve.addEventListener("click", solve);
+
+buttons.plusMinus.addEventListener("click", plusMinus)
+
 Object.values(buttons.numbers).forEach(btn => {
     btn.addEventListener("click", e => {
         addNumberToMainDisplay(e.target.textContent)
@@ -73,6 +83,30 @@ for (const [op, btn] of Object.entries(buttons.operators)) {
     });
 }
 
+function plusMinus() {
+    if (display.lock) {
+        display.lock =false;
+    }
+    let text = display.main.textContent;
+    text = text.startsWith("-") ? text.slice(1) : "-" + text;
+    display.main.textContent = text;
+}
+
+function solve() {
+    if (isNaN(numbers.a)) {
+        return;
+    }
+    if (!display.lock) {
+        numbers.b = parseFloat(display.main.textContent);
+        numbers.ans = operate(operator, numbers.a, numbers.b);
+        display.stat.textContent = numbers.a + " " + operator + " " + numbers.b + " =";
+        display.main.textContent = numbers.ans;
+        numbers.a = numbers.ans;
+        numbers.b = NaN;
+        display.lock = true;
+    }
+}
+
 function allClear() {
     clearDisplay();
     numbers.a = NaN;
@@ -81,7 +115,6 @@ function allClear() {
 }
 
 function operatorClick(e) {
-    console.log(display.lock);
     if (isNaN(numbers.a)) {
         operator = e;
         numbers.a = parseFloat(display.main.textContent);
@@ -106,6 +139,7 @@ function addDot() {
     if (!text.includes(".")) {
         text += ".";
         display.main.textContent = text;
+        display.lock = false;
     }
 }
 
@@ -133,6 +167,10 @@ function addNumberToMainDisplay(number = "") {
         text = "0";
     }
     display.main.textContent = text;
+    if (!isNaN(numbers.ans)) {
+        display.stat.textContent = numbers.ans + " " + operator;
+        numbers.ans = NaN;
+    }
 }
 
 function clearDisplay() {
